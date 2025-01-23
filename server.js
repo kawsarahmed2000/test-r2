@@ -1,5 +1,6 @@
 const express = require('express');
 const multer = require('multer');
+const sharp = require('sharp');
 const { S3Client, PutObjectCommand } = require('@aws-sdk/client-s3');
 const dotenv = require('dotenv');
 const crypto = require('crypto');
@@ -27,6 +28,7 @@ const r2Client = new S3Client({
 
 const BUCKET_NAME = process.env.R2_BUCKET_NAME;
 
+
 // Upload endpoint
 app.post('/upload', upload.single('image'), async (req, res) => {
     try {
@@ -37,12 +39,22 @@ app.post('/upload', upload.single('image'), async (req, res) => {
             return res.status(400).json({ error: 'No file uploaded' });
         }
 
+        let fileBuffer = req.file.buffer;
+
+        // Check if the file size is more than 2MB
+        if (req.file.size > 2 * 1024 * 1024) {
+            // Compress the image to 2MB
+            fileBuffer = await sharp(fileBuffer)
+                .jpeg({ quality: 80 }) // Adjust quality to compress
+                .toBuffer();
+        }
+
         const fileName = `${crypto.randomUUID()}-${req.file.originalname}`;
 
         const uploadParams = {
             Bucket: BUCKET_NAME, // Fixed: Using environment variable instead of hardcoded 'k'
             Key: fileName,
-            Body: req.file.buffer,
+            Body: fileBuffer,
             ContentType: req.file.mimetype,
         };
 
@@ -55,7 +67,6 @@ app.post('/upload', upload.single('image'), async (req, res) => {
         res.status(500).json({ error: 'Failed to upload file' });
     }
 });
-
 app.get('/', (req, res) => {
     res.send('Hello World!');
 });
