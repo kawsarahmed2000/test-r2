@@ -29,6 +29,10 @@ const r2Client = new S3Client({
 const BUCKET_NAME = process.env.R2_BUCKET_NAME;
 
 
+// Increase payload size limit
+app.use(bodyParser.json({ limit: '10mb' }));
+app.use(bodyParser.urlencoded({ limit: '10mb', extended: true }));
+
 // Upload endpoint
 app.post('/upload', upload.single('image'), async (req, res) => {
     try {
