@@ -1,0 +1,17 @@
+{
+  "name": "my-project",
+  "version": "1.0.0",
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.732.0",
+    "@aws-sdk/node-http-handler": "^3.370.0",
+    "crypto": "^1.0.1",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "multer": "^1.4.5-lts.1",
+    "nodemon": "^3.1.9"
+  },
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js"
+  }
+}
