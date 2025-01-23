@@ -1,5 +1,6 @@
 const express = require('express');
 const multer = require('multer');
+const bodyParser = require('body-parser');
 const sharp = require('sharp');
 const { S3Client, PutObjectCommand } = require('@aws-sdk/client-s3');
 const dotenv = require('dotenv');
